@@ -1,13 +1,12 @@
 "use client";
 import axios from "axios";
-import Link from "next/link";
+
 import {
   BiDockLeft,
   BiEdit,
   BiSearch,
-  BiDotsHorizontalRounded,
   BiSend,
-  BiMenu,
+
   BiLoader,
   BiDockRight,
 } from "react-icons/bi";
@@ -20,7 +19,7 @@ import { addMessage, setLoading } from "../../redux/chatSlice";
 export default function SearchPage() {
   const [mounted, setMounted] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const [showMenu, setShowMenu] = useState<number | null>(null);
+
   const [input, setInput] = useState("");
 
   const dispatch = useDispatch<AppDispatch>();
