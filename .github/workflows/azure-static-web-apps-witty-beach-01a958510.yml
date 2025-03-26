@@ -26,22 +26,16 @@ jobs:
       - name: Build Next.js App
         run: npm run build
 
-      - name: Export Static Files (Nếu dùng next export)
-        run: npm run export
-
-      - name: Build And Deploy
+      - name: Deploy to Azure Static Web Apps
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_WITTY_BEACH_01A958510 }}
-          repo_token: ${{ secrets.GITHUB_TOKEN }} # Used for GitHub integrations (i.e. PR comments)
+          repo_token: ${{ secrets.GITHUB_TOKEN }} 
           action: "upload"
-          ###### Repository/Build Configurations - These values can be configured to match your app requirements. ######
-          # For more information regarding Static Web App workflow configurations, please visit: https://aka.ms/swaworkflowconfig
-          app_location: "out"  # Next.js static export lưu tại `out`
-          api_location: "api"   # Nếu Next.js có API Routes
-          output_location: "out" # Nếu dùng `next export`
-          ###### End of Repository/Build Configurations ######
+          app_location: "src" # Thư mục chứa mã nguồn
+          api_location: "" # Nếu không có API, để trống
+          output_location: ".next" # Next.js build đầu ra nằm trong .next
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
