@@ -1,5 +1,5 @@
 "use client";
-
+import axios from "axios";
 import Link from "next/link";
 import {
   BiDockLeft,
@@ -38,16 +38,35 @@ export default function SearchPage() {
     }
   }, [messages]);
 
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (input.trim() !== "") {
-      dispatch(setLoading(true));
-      dispatch(addMessage({ text: input, sender: "user" }));
-      setInput("");
+      try {
+        dispatch(setLoading(true));
+        dispatch(addMessage({ role: "user", content: input }));
+        setInput("");
 
-      setTimeout(() => {
-        dispatch(addMessage({ text: "Tôi có thể giúp gì cho bạn?", sender: "bot" }));
+        const response = await axios.post("https://server-azure.onrender.com/chat-with-ai", {
+          message: [...messages,{ role: "user", content: input }],
+        });
+       
+       
+        let formattedMessage = response.data.message;
+        if (typeof formattedMessage === 'string') {
+          formattedMessage = formattedMessage
+            .replace(/\*\*/g, '')
+            .split('\n')
+            .filter(Boolean)
+            .join('\n');
+        }
+        dispatch(addMessage({ role: "system", content: formattedMessage || "Không có phản hồi" }));
+      } catch (error) {
+        console.error('Error:', error);
+     
+        dispatch(addMessage({ role: "system", content: "Lỗi khi gọi API!"}));
+      } finally {
+        console.log(messages);
         dispatch(setLoading(false));
-      }, 2000);
+      }
     }
   };
 
@@ -55,7 +74,7 @@ export default function SearchPage() {
 
   return (
     <div className="flex h-screen bg-black relative overflow-hidden">
-      {/* SIDEBAR trên desktop */}
+     
       <div
         className={`bg-gray-900 text-white transition-all duration-300 overflow-hidden 
           ${isSidebarOpen ? "w-64 p-4" : "w-0 p-0"} 
@@ -128,15 +147,15 @@ export default function SearchPage() {
             <div
               key={index}
               className={`flex ${
-                msg.sender === "user" ? "justify-end" : "justify-start"
+                msg.role === "user" ? "justify-end" : "justify-start"
               } mb-2`}
             >
               <span
                 className={`px-4 py-2 rounded-lg text-white ${
-                  msg.sender === "user" ? "bg-gray-500" : "bg-gray-700"
+                  msg.role === "user" ? "bg-gray-500" : "bg-gray-700"
                 }`}
               >
-                {msg.text}
+                {msg.content}
               </span>
             </div>
           ))}

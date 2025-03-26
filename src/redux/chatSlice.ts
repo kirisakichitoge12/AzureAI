@@ -1,8 +1,8 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface Message {
-  text: string;
-  sender: "user" | "bot";
+  role: "user" | "system";
+  content: string;
 }
 
 interface ChatState {
