@@ -6,7 +6,6 @@ import {
   BiEdit,
   BiSearch,
   BiSend,
-
   BiLoader,
   BiDockRight,
 } from "react-icons/bi";
