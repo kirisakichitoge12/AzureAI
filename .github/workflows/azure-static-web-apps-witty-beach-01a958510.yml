@@ -20,8 +20,11 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
-      - name: Build Next.js App
-        run: npm run build  # Nếu dùng next export, đổi thành: npm run export
+      - name: Build Next.js App (Static Export)
+        run: npm run export  # BẮT BUỘC nếu deploy lên Azure Static Web Apps
+
+      - name: Check Output Folder
+        run: ls -la out  # Kiểm tra xem thư mục out có tồn tại không
 
       - name: Deploy to Azure Static Web Apps
         id: builddeploy
@@ -30,8 +33,8 @@ jobs:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_WITTY_BEACH_01A958510 }}
           repo_token: ${{ secrets.GITHUB_TOKEN }} 
           action: "upload"
-          app_location: "/"  # Nếu mã nguồn Next.js nằm trong thư mục `src`, đổi thành "src"
-          output_location: ".next"  # Nếu dùng next export, đổi thành "out"
+          app_location: "/"  # Nếu code Next.js trong thư mục `src`, đổi thành "src"
+          output_location: "out"  # Next.js static export xuất file vào "out"
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
